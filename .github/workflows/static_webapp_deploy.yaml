@@ -24,7 +24,7 @@ jobs:
         shell: bash  
         env: 
           ENVIRONMENT: ${{ github.event.inputs.environment }} 
-          RG: ${{ vars.PROD_RG }} 
+          RG: ${{ vars.TEST_RG }} 
           SWA_NAME: swa-api-${{ github.event.inputs.environment }}-eus2-01
         run: | 
           echo "Selected Environment: $ENVIRONMENT" 
