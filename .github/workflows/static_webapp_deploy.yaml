@@ -1,0 +1,42 @@
+name: webapp-deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose Deployment environment'
+        required: true
+        type: choice
+        options:
+          - test
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Get Static Web App Deployment Token 
+        shell: bash  
+        env: 
+          ENVIRONMENT: ${{ github.event.inputs.environment }} 
+          RG: ${{ vars.PROD_RG }} 
+          SWA_NAME: swa-api-${{ github.event.inputs.environment }}-eus2-01
+        run: | 
+          echo "Selected Environment: $ENVIRONMENT" 
+          echo "SWA: $SWA_NAME" 
+          echo "Resource Group: $RG" 
+          TOKEN=$(az staticwebapp secrets list \ 
+            --name "$SWA_NAME" \ 
+            --resource-group "$RG" \ 
+            --query "properties.apiKey" \ 
+            --output tsv) 
+
+          if [ -z "$TOKEN" ]; then 
+          echo "ERROR: Failed to retrieve SWA deployment token" 
+          exit 1 fi 
+          
+          # Mask token in GitHub Actions logs 
+          echo "::add-mask::$TOKEN" 
+          echo "SWA deployment token retrieved successfully" 
+          
+          # Make token available to deployment step 
+          echo "AZURE_STATIC_WEB_APPS_API_TOKEN=$TOKEN" >> "$GITHUB_ENV"
