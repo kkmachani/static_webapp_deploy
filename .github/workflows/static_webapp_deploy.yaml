@@ -40,9 +40,9 @@ jobs:
           echo "ERROR: Failed to retrieve SWA deployment token" 
           exit 1 fi 
           
-          # Mask token in GitHub Actions logs 
-          echo "::add-mask::$TOKEN" 
-          echo "SWA deployment token retrieved successfully" 
+          # # Mask token in GitHub Actions logs 
+          # echo "::add-mask::$TOKEN" 
+          # echo "SWA deployment token retrieved successfully" 
           
           # Make token available to deployment step 
           echo "AZURE_STATIC_WEB_APPS_API_TOKEN=$TOKEN" >> "$GITHUB_ENV"
